@@ -23,6 +23,10 @@ If a `swarm-ready` skill is installed, load it. Otherwise execute the documented
 
 Read: [README.md](README.md), [scripts](scripts).
 
+Continue [PR #1](https://github.com/Kitkitkittt/gemini-vision-AI-website-monitor/pull/1)
+on its existing documentation branch. Repository issues are disabled. Keep the
+README and this handoff with one writer; application and service changes are outside this slice.
+
 Continue an existing approved issue or a clearly scoped user objective after inspecting the source map below. If none is selected, return the smallest useful improvement and its verifier as the handoff; do not begin a portfolio-wide rewrite.
 
 Start with one writer. Add workers only for disjoint changes or independent experiments whose results can be checked separately. Keep shared interfaces and final integration with one owner.
@@ -41,7 +45,29 @@ The base above is an inspection snapshot, not a permanent working branch. Refres
 
 ## Verification starting point
 
-No executable acceptance command was established by this bounded source inspection. Read `README.md`, `scripts` and record the narrowest existing check before implementation. Do not invent a `test` command or infer that the repository has no tests from this gap. For a documentation-only task, check links, factual source anchors and whitespace; do not build unrelated application code.
+**Scope: documentation and offline syntax only.** A clean checkout lacks the
+`browser_agent.screenshot` import and the Playwright server used by the launcher
+and [Compose configuration](docker-compose.yml). Both directories are ignored;
+dependency installation alone cannot restore them. See [Quick Start](README.md#quick-start)
+for the separation between available files and the service setup reference.
+
+From the repository root, syntax-check the two application modules without
+importing them, writing bytecode, or reading runtime configuration:
+
+```sh
+python3 -I -S - <<'PY'
+from pathlib import Path
+
+for name in ('app.py', 'tasks.py'):
+    compile(Path(name).read_bytes(), name, 'exec')
+    print(f'{name}: syntax OK')
+PY
+```
+
+Expect two `syntax OK` lines and exit 0. Also check the README entry and handoff
+links against the tracked tree. Syntax success is not import, service, or live
+acceptance. Leave Flask, Redis/RQ, browser startup, database migrations, website
+checks, Gemini and outbound notifications unrun for this task.
 
 ## Required handoff result
 

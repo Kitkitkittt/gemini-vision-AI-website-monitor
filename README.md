@@ -2,6 +2,8 @@
 
 A robust website monitoring solution with AI-powered change detection, screenshot capture, and multi-channel notifications.
 
+For repository work and checks that do not start the monitor, see the [swarm-ready handoff](SWARM_READY.md).
+
 ---
 
 ## Features
@@ -16,6 +18,12 @@ A robust website monitoring solution with AI-powered change detection, screensho
 ---
 
 ## Quick Start
+
+The service setup below is a reference, not a complete clean-clone recipe. This
+checkout does not include `browser_agent/screenshot.py` (imported by `app.py`)
+or `mcp_server/playwright-custom-server/server.js` (used by the screenshot
+launcher). Do not start the services until those inputs are available from
+their maintained source.
 
 ### 1. Prerequisites
 - Python 3.8+
@@ -32,7 +40,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Configuration
-- Copy `.env.example` to `.env` and fill in your credentials:
+- Create a local `.env` and fill in settings for your own test environment; this checkout does not include `.env.example`.
   - `REDIS_URL=redis://localhost:6379` (Adjust if Redis is elsewhere)
   - Email SMTP settings (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM`)
   - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (Optional, for Telegram notifications)
@@ -48,7 +56,7 @@ pip install -r requirements.txt
 
 ### 4. Running the App (Manual Start Recommended)
 
-The `run_all.bat` script is currently unreliable. Please start the services manually in separate terminals:
+The commands below describe a complete development environment once the missing inputs above are available.
 
 **Terminal 1: Playwright MCP Server**
 ```sh
@@ -70,7 +78,7 @@ venv\Scripts\activate
 waitress-serve --host=0.0.0.0 --port=5000 app:init_app()
 ```
 
-*(Alternatively, use `start_monitor.bat` to run only Terminal 3, assuming Redis and Playwright MCP are already running).* 
+*(The included Windows launcher is `start_website_monitor.bat`.)*
 
 - Visit `http://localhost:5000` in your browser.
 
@@ -123,7 +131,7 @@ Then visit `http://localhost:9181`.
 ---
 
 ## Contributing
-Pull requests and issues are welcome! Please see the [currentprogress.md](memory-bank/currentprogress.md) for the latest project status and roadmap.
+Use the existing pull request for handoff changes. See [the handoff](SWARM_READY.md) for offline verification and tracker status.
 
 ---
 
@@ -187,8 +195,7 @@ If you prefer to run migrations manually, you can use the following commands:
 
 For Windows users, several batch files are included for convenience:
 
-- `run_all.bat` - Start all components (Flask app, Redis server, workers)
-- `start_monitor.bat` - Start only the Flask application
+- `start_website_monitor.bat` - Start the Flask application
 - `start_playwright_server.bat` - Start the Playwright server for screenshots
 - `install_requirements.bat` - Install Python dependencies
 - `migrate_db.bat` - Manage database migrations
@@ -217,11 +224,7 @@ For Windows users, several batch files are included for convenience:
 - Improved time-based scheduling in containerized environments
 
 ## How to Start the App in Docker
-Read DOCKER_README.md
-or run
-```
-git clone https://github.com/Kohnnn/AI_Website_Monitor
-cd AI_Website_Monitor
-docker compose up --build
-```
+[Docker setup reference](DOCKER_README.md). The Compose Playwright service also
+expects the untracked `mcp_server/playwright-custom-server` directory; Compose
+does not make this checkout self-contained.
 
